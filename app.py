@@ -238,21 +238,7 @@ st.markdown("""
 # Sidebar configurations
 st.sidebar.header("📁 Dataset")
 
-# Dataset mapping
-datasets = {
-    "Amazon Reviews": "data/amazon_reviews.csv",
-    "arXiv Abstracts (Synthetic)": "data/arxiv.csv",
-    "arXiv Processed Sample (JSON)": "data/arxiv_processed_sample.json",
-    "arXiv Processed (JSON - Custom)": "data/arxiv_processed.json",
-    "Banking77 (Topic/Category - JSONL)": "data/datasets/banking77/small.jsonl",
-    "Banking77 (Action Intent - JSONL)": "data/datasets/banking77/300new_aspect.jsonl",
-    "Banking77 (Temporal Focus - JSONL)": "data/datasets/banking77/300new_aspect_time.jsonl"
-}
-selected_dataset = st.sidebar.selectbox("Choose Preset Dataset", list(datasets.keys()))
-
-# Allow custom dataset file path input
-custom_path = st.sidebar.text_input("Or enter custom dataset path:", value="")
-dataset_path = custom_path if custom_path else datasets[selected_dataset]
+dataset_path = st.sidebar.text_input("Enter dataset path:", value="data/arxiv_transformed_test.json")
 
 st.sidebar.markdown("---")
 st.sidebar.header("🤖 C3 Agent Configuration")
@@ -735,24 +721,24 @@ if st.session_state.get("initialized", False):
             ("Topic", "Group these documents by their main topic or subject."),
             ("Category", "Separate them based on categories or sentiment/attitude.")
         ]
-        if "Amazon" in selected_dataset:
+        if "amazon" in dataset_path.lower():
             suggestions = [
                 ("Sentiment", "Group reviews based on whether they like or dislike the product (Sentiment)."),
                 ("Feature", "Separate reviews by product functions like battery, charging vs. sound quality.")
             ]
-        elif "arXiv" in selected_dataset or "arxiv" in dataset_path.lower():
+        elif "arxiv" in dataset_path.lower():
             suggestions = [
                 ("Subject Domain", "Partition abstracts by academic subject domains like physics vs. computer science."),
                 ("Methodology", "Group papers by methodology, such as deep learning vs. classical statistics.")
             ]
-        elif "Banking77" in selected_dataset or "banking77" in dataset_path.lower():
-            if "intent" in selected_dataset.lower() or "300new_aspect" in dataset_path.lower():
+        elif "banking77" in dataset_path.lower():
+            if "intent" in dataset_path.lower() or "300new_aspect" in dataset_path.lower():
                 suggestions = [
                     ("Action Intent", "Group these banking customer service queries purely by their Action Intent into exactly 3 clusters: Information Inquiry, Complaint & Problem, and Urgent / Action Request."),
                     ("Topic/Category", "Group these banking customer service queries by their specific fine-grained customer intent or topic (e.g., card arrival, card linking, exchange rate, automatic top up)."),
                     ("Temporal Focus", "Group these banking customer service queries purely by their Temporal Focus: past, present, or future.")
                 ]
-            elif "time" in selected_dataset.lower() or "300new_aspect_time" in dataset_path.lower():
+            elif "time" in dataset_path.lower() or "300new_aspect_time" in dataset_path.lower():
                 suggestions = [
                     ("Temporal Focus", "Group these banking customer service queries purely by their Temporal Focus into exactly 3 clusters: past, present, and future."),
                     ("Topic/Category", "Group these banking customer service queries by their specific fine-grained customer intent or topic (e.g., card arrival, card linking, exchange rate, automatic top up)."),

@@ -45,9 +45,7 @@ conversational-clustering/
 ├── notebooks/
 │   ├── interactive_demo.ipynb     # Interactive Jupyter Notebook dashboard (ipywidgets)
 │   └── experiments.ipynb          # Automated benchmark comparison notebook (C3 vs Baselines)
-├── data/
-│   ├── amazon_reviews.csv         # Synthetic Amazon reviews dataset (Sentiment vs. Feature)
-│   └── arxiv.csv                  # Synthetic arXiv abstracts dataset (Subject vs. Methodology)
+├── data/                          # Directory to place your custom datasets (not tracked in Git)
 ├── tests/                         # Pytest unit test suite
 ├── requirements.txt               # Package dependencies
 ├── app.py                         # Streamlit premium interactive web application
@@ -76,10 +74,59 @@ conversational-clustering/
 
 ---
 
+## 💾 Dataset Loading & Preprocessing
+
+> [!IMPORTANT]
+> **No datasets are included in this Git repository.** You must supply your own custom dataset file (CSV, JSON, or JSONL) to test and run the application. Place your data file under the `data/` folder or specify its path directly in the configurations.
+
+The C3 framework natively supports loading datasets in **CSV**, **JSON**, and **JSONL** formats via the unified loader interface in [`src/dataset/loader.py`](file:///c:/LocalRepo/conversational-clustering/src/dataset/loader.py).
+
+### 1. Data Schema Requirements
+To load custom data, format your file as follows:
+* **Text Column/Field:** The loader expects a field named precisely `text` or `content` to serve as the document content.
+* **Aspect/Ground-Truth Columns:** Any other columns or keys in the data file are automatically treated as ground-truth **Aspects** (e.g., `category`, `sentiment`, `methodology`) and loaded as target labels for computing evaluation metrics (ARI/NMI/ACC).
+
+#### Examples:
+* **CSV Format:**
+  ```csv
+  text,category,sentiment
+  "Great battery life!","battery","positive"
+  "Muffled sound quality.","audio","negative"
+  ```
+* **JSON Format (List of Objects):**
+  ```json
+  [
+    {"text": "Sample text A", "category": "Math"},
+    {"text": "Sample text B", "category": "Physics"}
+  ]
+  ```
+* **JSONL Format (JSON Lines):**
+  ```json
+  {"text": "Document text 1", "category": "Category A"}
+  {"text": "Document text 2", "category": "Category B"}
+  ```
+
+### 2. Loading Data in Code
+You can import and use the loader in your test scripts:
+```python
+from src.dataset.loader import load_dataset
+
+# Load dataset (CSV, JSON, or JSONL)
+dataset = load_dataset("data/your_dataset.csv")
+
+# Retrieve raw document text strings
+texts = dataset.get_texts()
+
+# Retrieve ground truth labels for a specific aspect (e.g. 'category', 'sentiment')
+true_labels = dataset.get_aspect_labels("category")
+```
+
+---
+
 ## 📈 Running the Evaluations & Demos
 
 ### 1. Interactive Streamlit Web Application (Recommended)
-Launch the premium web UI to converse with the agent, view 2D PCA cluster maps in real-time, inspect individual cluster partitions/medoids, and try different presets (Amazon Reviews, arXiv, Banking77):
+Launch the premium web UI to converse with the agent, view 2D PCA cluster maps in real-time, inspect individual cluster partitions/medoids, and load your custom dataset:
 ```bash
 streamlit run app.py
 ```
