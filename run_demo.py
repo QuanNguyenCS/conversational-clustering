@@ -113,7 +113,10 @@ def run_demo():
         embedding_provider=emb_provider,
         agent=agent,
         num_samples=10,
-        random_state=42
+        random_state=42,
+        use_itml=True,
+        pca_dim=150,
+        clustering_params={"w": 25}
     )
     pipeline.set_data(texts)
 

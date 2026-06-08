@@ -259,7 +259,7 @@ def test_pipeline_custom_params():
     pipeline.set_data(texts)
     
     # Verify that the custom parameters are stored
-    assert pipeline.clustering_params == {"max_iter": 50, "tol": 1e-3}
+    assert pipeline.clustering_params == {"max_iter": 50, "tol": 1e-3, "w": 25}
     
     # Verify execution runs successfully with these custom parameters
     labels, keywords, central_docs = pipeline.run_initial_clustering()
